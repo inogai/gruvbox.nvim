@@ -5,6 +5,12 @@ local Gruvbox = {}
 
 ---@alias Contrast "hard" | "soft" | ""
 
+---@class KryptonConfig
+---@field ghost_text boolean
+---@field inlay_hints boolean
+---@field luadoc boolean
+---@field inline_code boolean
+
 ---@class ItalicConfig
 ---@field strings boolean
 ---@field comments boolean
@@ -34,6 +40,7 @@ local Gruvbox = {}
 ---@field underline boolean?
 ---@field bold boolean?
 ---@field italic ItalicConfig?
+---@field krypton KryptonConfig?
 ---@field strikethrough boolean?
 ---@field contrast Contrast?
 ---@field invert_selection boolean?
@@ -54,6 +61,12 @@ Gruvbox.config = {
     comments = true,
     operators = false,
     folds = true,
+  },
+  krypton = {
+    ghost_text = true,
+    inlay_hints = true,
+    luadoc = true,
+    inline_code = true,
   },
   strikethrough = true,
   invert_selection = false,
@@ -124,6 +137,12 @@ Gruvbox.palette = {
   light_aqua_hard = "#e6e9c1",
   light_aqua = "#e8e5b5",
   light_aqua_soft = "#e1dbac",
+  dark_orange_hard = "#4b2225",
+  dark_orange = "#4d2729",
+  dark_orange_soft = "#572e2f",
+  light_orange_hard = "#fbc6b4",
+  light_orange = "#fcc3a7",
+  light_orange_soft = "#f5b89e",
   gray = "#928374",
 }
 
@@ -167,6 +186,7 @@ local function get_colors()
       dark_red = p.dark_red,
       dark_green = p.dark_green,
       dark_aqua = p.dark_aqua,
+      dark_orange = p.dark_orange,
       gray = p.gray,
     },
     light = {
@@ -196,6 +216,7 @@ local function get_colors()
       dark_red = p.light_red,
       dark_green = p.light_green,
       dark_aqua = p.light_aqua,
+      dark_orange = p.light_orange,
       gray = p.gray,
     },
   }
@@ -363,6 +384,11 @@ local function get_groups()
     DiffDelete = { bg = colors.dark_red },
     DiffAdd = { bg = colors.dark_green },
     DiffChange = { bg = colors.dark_aqua },
+    MyDiffDeletedLines = { fg = colors.fg2 },
+    MyDiffTextFrom = { bg = colors.dark_red },
+    MyDiffTextTo = { bg = colors.dark_green },
+    MyDiffChangeFrom = { bg = colors.dark_orange },
+    MyDiffChangeTo = { bg = colors.dark_aqua },
     DiffText = { bg = colors.yellow, fg = colors.bg0 },
     SpellCap = { link = "GruvboxBlueUnderline" },
     SpellBad = { link = "GruvboxRedUnderline" },
@@ -483,6 +509,11 @@ local function get_groups()
     TelescopeMatching = { link = "GruvboxBlue" },
     TelescopePromptPrefix = { link = "GruvboxRed" },
     TelescopePrompt = { link = "TelescopeNormal" },
+    CmpGhostText = {
+      fg = colors.gray,
+      bold = config.krypton.ghost_text,
+      italic = config.krypton.ghost_text or config.italic.comments,
+    },
     CmpItemAbbr = { link = "GruvboxFg0" },
     CmpItemAbbrDeprecated = { link = "GruvboxFg1" },
     CmpItemAbbrMatch = { link = "GruvboxBlueBold" },
@@ -876,7 +907,12 @@ local function get_groups()
     MasonMuted = { fg = colors.fg4 },
     MasonMutedBlock = { fg = colors.bg0, bg = colors.fg4 },
     MasonMutedBlockBold = { fg = colors.bg0, bg = colors.fg4, bold = true },
-    LspInlayHint = { link = "comment" },
+    LspInlayHint = {
+      fg = colors.fg4,
+      bg = colors.bg1,
+      bold = config.krypton.inlay_hints,
+      italic = config.krypton.inlay_hints or config.italic.comments,
+    },
     CarbonFile = { link = "GruvboxFg1" },
     CarbonExe = { link = "GruvboxYellow" },
     CarbonSymlink = { link = "GruvboxAqua" },
@@ -948,6 +984,7 @@ local function get_groups()
     DiffviewFilePanelInsertions = { link = "GruvboxGreenBold" },
     DiffviewFilePanelDeletions = { link = "GruvboxRedBold" },
     ["@comment"] = { link = "Comment" },
+    ["@comment.documentation.lua"] = { bold = config.krypton.luadoc, italic = config.krypton.luadoc },
     ["@none"] = { bg = "NONE", fg = "NONE" },
     ["@preproc"] = { link = "PreProc" },
     ["@define"] = { link = "Define" },
@@ -1026,6 +1063,11 @@ local function get_groups()
     ["@markup.list"] = { link = "Delimiter" },
     ["@markup.list.checked"] = { link = "GruvboxGreen" },
     ["@markup.list.unchecked"] = { link = "GruvboxGray" },
+    ["@markup.raw.vimdoc"] = {
+      bg = colors.bg1,
+      bold = config.krypton.inline_code,
+      italic = config.krypton.inline_code,
+    },
     ["@comment.todo"] = { link = "Todo" },
     ["@comment.note"] = { link = "SpecialComment" },
     ["@comment.warning"] = { link = "WarningMsg" },
